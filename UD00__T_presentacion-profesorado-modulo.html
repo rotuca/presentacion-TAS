@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Tema 0 — Presentación del profesorado, del módulo y evaluación inicial</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root{
+    --bg:#0b1220; --bg2:#111b2e; --panel:#16233d; --line:#2a3b5c;
+    --text:#eef2fb; --muted:#a9b7d6; --accent:#f5a623; --accent2:#33c2ff;
+    --ok:#3ddc97; --warn:#ff6b6b;
+  }
+  body{transition:background .25s ease, color .25s ease;}
+  body.light-theme{--bg:#eef1f8; --bg2:#ffffff; --panel:#ffffff; --line:#d7deec; --text:#1a2338; --muted:#556184; --accent:#b5730a; --accent2:#0f7fb3; --ok:#1a8f5f; --warn:#c9403f; --heroline:#c7cfe4;}
+  *{box-sizing:border-box;}
+  html{font-size:calc(16px * var(--font-scale,1));}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family:'Segoe UI',Calibri,Arial,sans-serif;
+    background:radial-gradient(1200px 800px at 80% -10%, var(--bg2), var(--bg));
+    color:var(--text); overflow:hidden;
+  }
+  .deck{position:relative;height:100vh;width:100%;max-width:var(--deck-max,100%);margin:0 auto;}
+  .slide{
+    position:absolute; inset:0; display:none; flex-direction:column;
+    justify-content:center; padding:6vh 8vw; opacity:0;
+    transition:opacity .35s ease;
+  }
+  .slide.active{display:flex; opacity:1;}
+  .kicker{color:var(--accent2); letter-spacing:.15em; text-transform:uppercase; font-size:1.1rem; font-weight:700; margin-bottom:.5rem;}
+  h1{font-size:3.4rem; margin:.1em 0; line-height:1.1;}
+  h2{font-size:2.4rem; margin:.1em 0 .6em 0; color:var(--text);}
+  h3{font-size:1.6rem; color:var(--accent); margin:0 0 .3em 0;}
+  p, li{font-size:1.4rem; line-height:1.5; color:var(--text);}
+  .muted{color:var(--muted);}
+  .cols{display:flex; gap:4vw; align-items:center; width:100%;}
+  .col{flex:1;}
+  ul{margin:0; padding-left:1.2em;}
+  li{margin-bottom:.5em;}
+  .avatar{width:150px; height:150px; border-radius:50%; overflow:hidden; border:3px solid var(--accent2); margin:0 auto 1.5rem auto;}
+  .avatar img{width:100%; height:100%; object-fit:cover; display:block;}
+  .byline{color:var(--muted); font-size:1.2rem; font-weight:400; margin-top:1.8rem; letter-spacing:.02em;}
+  .pill{background:var(--bg2); border:1px solid var(--line); border-radius:12px; padding:1rem 1.4rem; margin-bottom:.8rem; display:inline-block;}
+  .badge{display:inline-block; background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:.3em 1em; font-size:1.2rem; color:var(--accent2); margin-bottom:1em;}
+  .grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1.2rem; width:100%;}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:1.2rem; text-align:center;}
+  .card .n{font-size:2rem; font-weight:800; color:var(--accent);}
+  .card .t{font-size:1.1rem; color:var(--muted); margin-top:.3em;}
+  .progress{position:absolute; bottom:0; left:0; height:6px; background:linear-gradient(90deg,var(--accent2),var(--accent)); transition:width .35s ease;}
+  .nav{position:fixed; bottom:2vh; right:3vw; display:flex; gap:.6rem; z-index:10;}
+  .nav button{background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:10px; padding:.6em 1.1em; font-size:1rem; cursor:pointer;}
+  .nav button:hover{border-color:var(--accent2);}
+  .counter{position:fixed; top:2vh; right:3vw; color:var(--muted); font-size:1rem; z-index:10;}
+  .deck-header{position:absolute; top:2vh; left:8vw; right:20vw; color:var(--muted); font-size:.95rem; z-index:10; display:flex; gap:.6em; align-items:baseline; white-space:nowrap; overflow:hidden; background:rgba(11,18,32,.72); backdrop-filter:blur(4px); padding:.3em .7em; border-radius:9px;}
+  .deck-header .ud{color:var(--accent2); font-weight:700; flex:0 0 auto;}
+  .deck-header .titulo{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  body.light-theme .deck-header{background:rgba(255,255,255,.75);}
+  .ud-label{display:block; font-size:.4em; font-weight:600; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-bottom:.3em;}
+  .hero .ud-label{color:#c7cfe4;}
+  body.light-theme .hero .ud-label{color:#556184;}
+  svg{display:block;}
+  .center{align-items:center; text-align:center;}
+  .timeline{display:flex; align-items:flex-end; gap:.6rem; width:100%; margin-top:2rem;}
+  .tstop{flex:1; text-align:center;}
+  .tstop .dot{width:100%; height:14px; border-radius:8px; background:var(--line); position:relative;}
+  .tstop.now .dot{background:var(--accent);}
+  .tstop .lbl{font-size:1rem; color:var(--muted); margin-top:.6rem;}
+  .tstop .hrs{font-size:1.3rem; font-weight:700; color:var(--text);}
+  .big{font-size:5rem; font-weight:800; color:var(--accent); line-height:1;}
+  .verbrow{display:flex; gap:2rem; justify-content:center; margin-top:2rem;}
+  .verbrow div{background:var(--panel); border:2px solid var(--accent2); border-radius:18px; padding:1.4rem 2rem; font-size:2rem; font-weight:700;}
+  .hero{background-size:cover; background-position:center;}
+  .hero::before{content:'';position:absolute; inset:0; background:linear-gradient(180deg, rgba(11,18,32,.45) 0%, rgba(11,18,32,.75) 55%, rgba(11,18,32,.96) 100%); z-index:0;}
+  .hero > *{position:relative; z-index:1;}
+  .hero-content{display:inline-block; max-width:92%;}
+  body.light-theme .hero{filter:brightness(1.12) contrast(.92) saturate(.85);}
+  body.light-theme .hero::before{background:linear-gradient(180deg, rgba(238,241,248,.2) 0%, rgba(238,241,248,.55) 55%, rgba(238,241,248,.85) 100%);}
+  body.light-theme .hero-content{background:rgba(255,255,255,.8); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-radius:22px; padding:1.7rem 2.3rem; box-shadow:0 10px 30px rgba(20,30,60,.15);}
+  body.light-theme .hero, body.light-theme .hero h1, body.light-theme .hero h2, body.light-theme .hero p, body.light-theme .hero .muted{color:#101728;}
+  body.light-theme .hero .kicker{color:#0f7fb3;}
+  .photo{width:100%; border-radius:18px; overflow:hidden; border:1px solid var(--line); box-shadow:0 10px 30px rgba(0,0,0,.4);}
+  .photo img{width:100%; height:100%; object-fit:cover; display:block;}
+  .credit{position:fixed; bottom:.6vh; left:1vw; color:#5a6a8c; font-size:.7rem; z-index:10;}
+  .example{background:var(--panel); border-left:5px solid var(--accent); border-radius:0 12px 12px 0; padding:1rem 1.4rem; margin-top:1.4rem; font-size:1.15rem;}
+  .example b{color:var(--accent);}
+  .example > b:first-child{display:block; margin-bottom:.4em; font-size:1.05em;}
+  .info-btn{flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; width:1.5em; height:1.5em; min-width:1.5em; border-radius:50%; border:1.5px solid var(--accent2); color:var(--accent2); background:transparent; font-size:.85rem; font-weight:700; line-height:1; padding:0; margin-left:.45em; cursor:pointer; vertical-align:middle; transition:all .2s;}
+  .info-btn:hover{background:rgba(51,194,255,.15); transform:scale(1.12);}
+  .card h3, .pill h3{display:inline-flex; align-items:center;}
+  .example .info-btn{margin-left:.5em;}
+  .modal-overlay{display:none; position:fixed; inset:0; background:rgba(5,10,20,.62); backdrop-filter:blur(2px); z-index:200; align-items:center; justify-content:center; padding:6vh 6vw;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:0; max-width:640px; max-height:78vh; overflow:hidden; position:relative; box-shadow:0 25px 70px rgba(0,0,0,.55); display:flex; flex-direction:column;}
+  .modal-header{display:flex; align-items:center; gap:.7rem; padding:1.3rem 3.2rem 1.1rem 1.6rem; background:linear-gradient(135deg, rgba(51,194,255,.14), rgba(245,166,35,.08)); border-bottom:2px solid var(--accent2);}
+  .modal-icon{flex:0 0 auto; width:2.1rem; height:2.1rem; border-radius:50%; background:var(--accent2); color:var(--bg); display:flex; align-items:center; justify-content:center; font-size:1.1rem; font-weight:800;}
+  .modal-header h3{margin:0; color:var(--text); font-size:1.35rem; line-height:1.25;}
+  .modal-body{padding:1.5rem 1.8rem 1.7rem; overflow-y:auto;}
+  .modal-body p{font-size:1.08rem; line-height:1.6; margin:.5em 0; color:var(--text);}
+  .modal-body b{color:var(--accent);}
+  .modal-close{position:absolute; top:.9rem; right:1rem; background:rgba(255,255,255,.08); border:none; border-radius:50%; width:2em; height:2em; color:var(--muted); font-size:1.15rem; cursor:pointer; line-height:1; z-index:1;}
+  .modal-close:hover{color:var(--text); background:rgba(255,255,255,.18);}
+  .ctrl-bar{position:fixed; bottom:2vh; left:3vw; z-index:20; display:flex; flex-direction:column-reverse; align-items:flex-start; gap:.6rem;}
+  .gear-btn{background:rgba(22,35,61,.55); color:var(--text); border:1px solid rgba(255,255,255,.18); border-radius:50%; width:2.6em; height:2.6em; font-size:1.15rem; line-height:1; cursor:pointer; backdrop-filter:blur(4px); opacity:.55; transition:opacity .2s,border-color .2s,transform .2s;}
+  body.light-theme .gear-btn{background:rgba(255,255,255,.6); border:1px solid rgba(0,0,0,.12);}
+  .gear-btn:hover{opacity:1; border-color:var(--accent2);}
+  .gear-btn.open{opacity:1; border-color:var(--accent2); transform:rotate(45deg);}
+  .ctrl-panel{display:none; flex-direction:column; gap:.5rem; background:rgba(22,35,61,.55); border:1px solid rgba(255,255,255,.18); border-radius:14px; padding:.7rem; backdrop-filter:blur(6px);}
+  body.light-theme .ctrl-panel{background:rgba(255,255,255,.75); border:1px solid rgba(0,0,0,.12);}
+  .ctrl-panel.open{display:flex;}
+  .ctrl-panel button{background:rgba(255,255,255,.08); color:var(--text); border:1px solid rgba(255,255,255,.18); border-radius:10px; padding:.5em .9em; font-size:.85rem; cursor:pointer; transition:border-color .2s,color .2s;}
+  body.light-theme .ctrl-panel button{background:rgba(0,0,0,.05); border:1px solid rgba(0,0,0,.12);}
+  .ctrl-panel button:hover{border-color:var(--accent2);}
+  .ctrl-panel button.active{border-color:var(--accent); color:var(--accent);}
+  #themeToggle{font-size:1.1rem; padding:.4em .7em; align-self:flex-start;}
+  .font-ctrl{display:flex; gap:.4rem;}
+  .width-ctrl{display:flex; flex-wrap:wrap; gap:.4rem;}
+  .reset-btn{width:100%; text-align:center; margin-top:.15rem; border-top:1px solid rgba(255,255,255,.12); padding-top:.6rem !important;}
+  body.light-theme .reset-btn{border-top:1px solid rgba(0,0,0,.1);}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+<div class="deck-header" id="deckHeader"><span class="ud">UD 0</span><span class="titulo">Presentación del profesorado, del módulo y evaluación inicial</span></div>
+
+  <section class="slide active center">
+    <div class="avatar"><img src="imagenes/camara_domo.jpg" alt="Cámara de seguridad"></div>
+    <div class="kicker">Ciclo Formativo de Grado Medio · Técnico en Seguridad</div>
+    <br>
+    <h1 style="font-size:2.3rem;">Módulo 1676<br>Tecnología aplicada a la seguridad</h1>
+    <p class="muted">CIPFP Complejo Educativo de Cheste · Departamento de Informática</p>
+    <br>
+    <p class="byline">Roberto Tubilleja Calvo</p>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Quién imparte el módulo</div>
+    <p style="font-size:1.4rem; color:var(--accent); font-weight:700; margin:.2em 0 .3em 0; text-align:center;">Roberto Tubilleja Calvo</p>
+    <div class="pill">
+    <div style="font-size:0.9rem; color:var(--muted); margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">Correo</div>
+      <a href="mailto:r.tubillejacalvo@edu.gva.es" style="text-decoration:none; color:var(--accent2); font-weight:600; font-size:1.15rem;">r.tubillejacalvo@edu.gva.es</a>
+    </div>
+    <h2>Trayectoria y experiencia</h2>
+    <ul>
+      <li><b>Ingeniero informático.</b></li>
+      <li>Antes de dedicarme a la docencia, <b>14 años de experiencia en la empresa privada</b> como desarrollador de software en varios sectores.</li>
+      <li><b>Profesor del departamento de Informática</b> del centro, donde también imparto otros módulos del ciclo.</li>
+    </ul>
+    <h3 style="margin-top:1.2rem; color:var(--text);">Curiosidades</h3>
+    <ul>
+      <li><b>Motero y viajero:</b> me gusta hacer rutas largas en moto siempre que puedo.</li>
+      <li>Como afición, monto y trasteo con <b>sistemas domóticos en casa (Home Assistant)</b> — algo que conecta directamente con la parte de integración de sistemas que veremos en el Tema 7.</li>
+    </ul>
+  </section>
+
+  <section class="slide center">
+    <div class="kicker">Ahora os toca a vosotros</div>
+    <h2>Presentación del alumnado</h2>
+    <div class="grid">
+      <div class="card"><h3>👤 Nombre</h3><p>¿Cómo te llamas?</p></div>
+      <div class="card"><h3>📍 Procedencia</h3><p>¿De dónde vienes?</p></div>
+      <div class="card"><h3>📚 Formación previa</h3><p>¿Qué has estudiado antes?</p></div>
+      <div class="card"><h3>🎯 Motivación</h3><p>¿Por qué este ciclo?</p></div>
+    </div>
+    <div class="grid" style="margin-top:1.5rem;">
+      <div class="card"><h3>⭐ Hobbies</h3><p>¿Qué te gusta en tu tiempo libre?</p></div>
+      <div class="card"><h3>🐕 Mascotas</h3><p>¿Tienes mascota? ¿Cuál?</p></div>
+      <div class="card" style="grid-column:span 2;"><h3>💭 Algo más</h3><p>Cualquier dato curioso que quieras compartir</p></div>
+    </div>
+    <p class="muted" style="margin-top:2rem; font-size:1.2rem;">Cada persona tendrá <b>2-3 minutos</b> para presentarse</p>
+  </section>
+
+  <section class="slide center hero" style="background-image:url('imagenes/camara_seguridad.jpg');">
+    <div class="hero-content">
+    <div class="kicker">Módulo 1676 · Tecnología aplicada a la seguridad</div>
+    <h1><span class="ud-label">UD 0</span>Presentación del módulo<br>y evaluación inicial</h1>
+    <p class="muted">Curso 2026/2027 · Sesión 1 · Técnico en Seguridad</p>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Antes de empezar</div>
+    <h2>¿Qué es este módulo… y qué NO es?</h2>
+    <div class="cols">
+      <div class="col">
+        <div class="photo" style="aspect-ratio:4/5;">
+          <img src="imagenes/camara_domo.jpg" alt="Cámara de seguridad">
+        </div>
+      </div>
+      <div class="col">
+        <ul>
+          <li><b style="color:var(--ok)">SÍ:</b> formamos usuarios profesionales avanzados de sistemas de seguridad electrónica.</li>
+          <li><b style="color:var(--warn)">NO:</b> no formamos instaladores. Instalar y reparar es competencia de empresas de seguridad inscritas.</li>
+          <li>Vas a aprender a <b>operar, verificar y valorar</b> sistemas, no a montarlos en un cuadro eléctrico.</li>
+        </ul>
+        <div class="example"><b>Ejemplo:</b> Si una cámara se congela, tu trabajo es detectarlo, comprobar la causa en el software y documentarlo en el parte. Subir a repararla la hace la empresa instaladora.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide center">
+    <div class="kicker">Lo dice la propia norma</div>
+    <h2>Los verbos del título lo confirman</h2>
+    <div class="verbrow">
+      <div>Identifica</div>
+      <div>Reconoce</div>
+      <div>Valora</div>
+    </div>
+    <p class="muted" style="margin-top:2rem;">Ningún resultado de aprendizaje dice <i>instala</i>, <i>configura</i> o <i>repara</i>.</p>
+    <div class="example" style="text-align:left; max-width:60ch; margin-left:auto; margin-right:auto;"><b>Ejemplo:</b> "Reconoce los sistemas de intrusión, identificando sus componentes" (RA2) — se te pide reconocer y saber para qué sirve cada pieza, no montarla ni cablearla.</div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Mapa del módulo</div>
+    <h2>Todo el curso, 8 temas</h2>
+    <div class="timeline">
+      <div class="tstop now"><div class="dot"></div><div class="hrs">T0</div><div class="lbl">Presentación</div></div>
+      <div class="tstop"><div class="dot"></div><div class="hrs">T1</div><div class="lbl">Proyecto y riesgos</div></div>
+      <div class="tstop"><div class="dot"></div><div class="hrs">T2</div><div class="lbl">Intrusión</div></div>
+      <div class="tstop"><div class="dot"></div><div class="hrs">T3</div><div class="lbl">Accesos</div></div>
+      <div class="tstop"><div class="dot"></div><div class="hrs">T4</div><div class="lbl">CCTV</div></div>
+      <div class="tstop"><div class="dot"></div><div class="hrs">T5</div><div class="lbl">Incendios</div></div>
+      <div class="tstop"><div class="dot"></div><div class="hrs">T6</div><div class="lbl">CRA</div></div>
+      <div class="tstop"><div class="dot"></div><div class="hrs">T7</div><div class="lbl">Integración</div></div>
+      <div class="tstop"><div class="dot"></div><div class="hrs">T8</div><div class="lbl">Innovación</div></div>
+    </div>
+    <p class="muted" style="margin-top:2rem;">Cada tema corresponde a un Resultado de Aprendizaje (RA) del Real Decreto 570/2023.</p>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Organización semanal</div>
+    <h2>6 horas a la semana: jueves + viernes</h2>
+    <div class="cols">
+      <div class="col pill">
+        <h3>Jueves — 3 h</h3>
+        <p>Fundamentos, conceptos, normativa. Se abre el tema.</p>
+      </div>
+      <div class="col pill">
+        <h3>Viernes — 3 h</h3>
+        <p>Práctica, ejercicios, proyecto. Se cierra el tema.</p>
+      </div>
+    </div>
+    <p style="margin-top:1.5rem;"><b style="color:var(--warn)">Todos los jueves y viernes lectivos del curso, salvo festivos y el periodo de FCT → cada sesión perdida cuenta.</b></p>
+    <div class="example"><b>Ejemplo:</b> En el Tema 2, el jueves se explican los tipos de detectores y el viernes se analiza un histórico real de eventos para "cazar" tres falsas alarmas escondidas entre 40 registros.</div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">¡Bienvenid@ al módulo!</div>
+    <h2>Normas de convivencia en el aula</h2>
+    <div class="grid">
+      <div class="card"><h3>📵 Móvil guardado</h3><p>Fuera durante las explicaciones, salvo que la actividad lo pida</p></div>
+      <div class="card"><h3>🤝 Respeto</h3><p>A los compañeros y al profesorado</p></div>
+      <div class="card"><h3>🤫 Silencio activo</h3><p>Cuando se explica, se escucha</p></div>
+      <div class="card"><h3>💻 Uso del equipo</h3><p>Para trabajar, no para juegos ni redes</p></div>
+    </div>
+    <div class="example"><b>Y algo propio de este oficio:</b> en seguridad, la discreción también se entrena desde ya. Lo que se ve en una práctica con datos o casos reales no se comenta fuera del aula.</div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Evaluación</div>
+    <h2>Cómo se te va a evaluar</h2>
+    <div class="grid">
+      <div class="card"><div class="n">8</div><div class="t">RA independientes, cada uno con nota propia</div></div>
+      <div class="card"><div class="n">≥5</div><div class="t">Mínimo por RA para aprobar el módulo</div></div>
+      <div class="card"><div class="n">70%</div><div class="t">Examen escrito</div></div>
+      <div class="card"><div class="n">30%</div><div class="t">Práctica: taller, proyecto, investigación, observación</div></div>
+    </div>
+    <p class="muted" style="margin-top:1.5rem;"><b style="color:var(--warn)">Hay que aprobar las dos partes por separado:</b> aprobar la práctica no compensa suspender el examen, ni al revés.</p>
+    <div class="example"><b>Ejemplo:</b> Un 8 en el examen de un RA y un 3 en su práctica dan una media de 6,5... pero ese RA queda <b>suspendido</b>, porque la práctica no llega al mínimo.</div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">El hilo conductor del curso</div>
+    <h2>Un proyecto que se construye tema a tema</h2>
+    <svg width="100%" height="260" viewBox="0 0 900 260">
+      <rect x="20" y="40" width="860" height="180" fill="none" stroke="#2a3b5c" stroke-width="4" rx="10"/>
+      <rect x="50" y="70" width="180" height="120" fill="#16233d" stroke="#33c2ff" stroke-width="3"/>
+      <text x="140" y="140" fill="#eef2fb" font-size="18" text-anchor="middle">Administración</text>
+      <rect x="260" y="60" width="260" height="140" fill="#16233d" stroke="#f5a623" stroke-width="3"/>
+      <text x="390" y="135" fill="#eef2fb" font-size="18" text-anchor="middle">Pabellón deportivo</text>
+      <rect x="550" y="90" width="150" height="110" fill="#16233d" stroke="#3ddc97" stroke-width="3"/>
+      <text x="625" y="150" fill="#eef2fb" font-size="16" text-anchor="middle">Residencia</text>
+      <rect x="720" y="120" width="120" height="80" fill="#16233d" stroke="#a9b7d6" stroke-width="3"/>
+      <text x="780" y="165" fill="#eef2fb" font-size="14" text-anchor="middle">Almacén</text>
+    </svg>
+    <p class="muted">"Complejo Educativo de Cheste" — distribución simplificada del propio centro, a efectos didácticos.</p>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Norma del curso</div>
+    <h2>Uso de la inteligencia artificial generativa</h2>
+    <ul>
+      <li><b style="color:var(--ok)">Permitido:</b> entender conceptos, generar borradores, traducir, revisar redacción</li>
+      <li><b style="color:var(--accent2)">Obligatorio:</b> declarar su uso al final del trabajo entregado</li>
+      <li><b style="color:var(--warn)">No permitido:</b> entregar un dato sin verificar</li>
+    </ul>
+    <div class="example"><b>Ejemplo correcto:</b> "Se ha usado IA para aclarar el concepto de antimasking antes de redactar esta respuesta."<br><br><b>Ejemplo incorrecto:</b> Copiar un plazo legal generado por IA sin comprobarlo, y que resulte ser erróneo en el proyecto entregado.</div>
+  </section>
+
+  <section class="slide">
+    <div class="cols">
+      <div class="col">
+        <div class="kicker">Regla del curso</div>
+        <div class="big">Trabajo<br>individual</div>
+        <p style="max-width:40ch; margin-top:1.5rem;">Todas las prácticas y el proyecto se resuelven <b>de forma individual</b>. Cada uno entrega su propio trabajo.</p>
+        <div class="example" style="max-width:40ch;"><b>Ejemplo:</b> En el Tema 1 cada uno entrega su propio "dossier del riesgo" del centro; en el Tema 2, sobre ese mismo dossier, añade su propuesta de intrusión.</div>
+      </div>
+      <div class="col">
+        <div class="photo" style="aspect-ratio:4/3;">
+          <img src="imagenes/sala_control.jpg" alt="Operador en sala de control">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide center hero" style="background-image:url('imagenes/estudiantes_examen.jpg');">
+    <div class="hero-content">
+    <div class="kicker">Ahora toca</div>
+    <h1>Prueba de evaluación inicial</h1>
+    </div>
+  </section>
+
+</div>
+
+<div class="counter"><span id="cur">1</span> / <span id="tot"></span></div>
+<div class="progress" id="progress"></div>
+<div class="ctrl-bar" id="ctrlBar">
+  <div class="ctrl-panel" id="ctrlPanel">
+    <button id="themeToggle" title="Cambiar modo claro/oscuro">🌙</button>
+    <div class="font-ctrl" id="fontCtrl" title="Tamaño del texto">
+      <button id="fontDec">A－</button>
+      <button id="fontInc">A＋</button>
+    </div>
+    <div class="width-ctrl" id="widthCtrl" title="Ajustar ancho de la diapositiva en pantallas panorámicas">
+      <button data-w="100%">Completo</button>
+      <button data-w="1600px">1600px</button>
+      <button data-w="1200px">1200px</button>
+      <button data-w="900px">900px</button>
+    </div>
+    <button id="resetCtrl" class="reset-btn" title="Restablecer valores por defecto">↺ Restablecer</button>
+  </div>
+  <button id="ctrlToggle" class="gear-btn" title="Opciones de visualización">⚙</button>
+</div>
+<div class="modal-overlay" id="infoOverlay" onclick="if(event.target===this) closeInfo();">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeInfo()">✕</button>
+    <div class="modal-header">
+      <span class="modal-icon">+</span>
+      <h3 id="infoModalTitle"></h3>
+    </div>
+    <div class="modal-body" id="infoModalContent"></div>
+  </div>
+</div>
+<div class="nav">
+  <button id="btnPrev" onclick="go(-1)">◀ Anterior</button>
+  <button id="btnNext" onclick="go(1)">Siguiente ▶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let i = 0;
+  document.getElementById('tot').textContent = slides.length;
+  function render(){
+    slides.forEach((s,idx)=>s.classList.toggle('active', idx===i));
+    document.getElementById('cur').textContent = i+1;
+    document.getElementById('progress').style.width = ((i+1)/slides.length*100)+'%';
+    document.getElementById('btnPrev').style.visibility = (i===0) ? 'hidden' : 'visible';
+    document.getElementById('btnNext').style.visibility = (i===slides.length-1) ? 'hidden' : 'visible';
+    document.getElementById('deckHeader').style.display = (i===0) ? 'none' : 'flex';
+  }
+  function openInfo(btn){
+    var box = btn.closest('.card, .pill, .example, .step-card, li, p') || btn.parentElement;
+    var src = box.querySelector('.info-src') ||
+      (box.nextElementSibling && box.nextElementSibling.classList.contains('info-src') ? box.nextElementSibling : null);
+    document.getElementById('infoModalTitle').textContent = btn.dataset.title || '';
+    document.getElementById('infoModalContent').innerHTML = src ? src.innerHTML : '';
+    document.getElementById('infoOverlay').classList.add('open');
+  }
+  function closeInfo(){
+    document.getElementById('infoOverlay').classList.remove('open');
+  }
+  function go(d){
+    i = Math.min(Math.max(i+d,0), slides.length-1);
+    render();
+  }
+  document.addEventListener('keydown', e=>{
+    if(document.getElementById('infoOverlay').classList.contains('open')){
+      if(e.key === 'Escape') closeInfo();
+      return;
+    }
+    if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)) go(1);
+    if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) go(-1);
+  });
+  (function(){
+    var root = document.documentElement;
+    var buttons = document.querySelectorAll('#widthCtrl button');
+    function apply(w){
+      root.style.setProperty('--deck-max', w);
+      buttons.forEach(function(b){ b.classList.toggle('active', b.dataset.w === w); });
+      try{ localStorage.setItem('deckWidth', w); }catch(e){}
+    }
+    buttons.forEach(function(b){
+      b.addEventListener('click', function(){ apply(b.dataset.w); });
+    });
+    var saved = '100%';
+    try{ saved = localStorage.getItem('deckWidth') || '100%'; }catch(e){}
+    apply(saved);
+  })();
+  (function(){
+    var btn = document.getElementById('themeToggle');
+    function applyTheme(t){
+      document.body.classList.toggle('light-theme', t === 'light');
+      btn.textContent = t === 'light' ? '☀' : '🌙';
+      try{ localStorage.setItem('deckTheme', t); }catch(e){}
+    }
+    btn.addEventListener('click', function(){
+      var next = document.body.classList.contains('light-theme') ? 'dark' : 'light';
+      applyTheme(next);
+    });
+    var savedTheme = 'dark';
+    try{ savedTheme = localStorage.getItem('deckTheme') || 'dark'; }catch(e){}
+    applyTheme(savedTheme);
+  })();
+  (function(){
+    var gear = document.getElementById('ctrlToggle');
+    var panel = document.getElementById('ctrlPanel');
+    gear.addEventListener('click', function(e){
+      e.stopPropagation();
+      var open = panel.classList.toggle('open');
+      gear.classList.toggle('open', open);
+    });
+    document.addEventListener('click', function(e){
+      if(!panel.contains(e.target) && e.target!==gear){
+        panel.classList.remove('open');
+        gear.classList.remove('open');
+      }
+    });
+  })();
+  (function(){
+    var root = document.documentElement;
+    var dec = document.getElementById('fontDec');
+    var inc = document.getElementById('fontInc');
+    var scale = 1;
+    function apply(s){
+      scale = Math.min(1.4, Math.max(0.75, Math.round(s*100)/100));
+      root.style.setProperty('--font-scale', scale);
+      try{ localStorage.setItem('deckFontScale', scale); }catch(e){}
+    }
+    dec.addEventListener('click', function(){ apply(scale - 0.1); });
+    inc.addEventListener('click', function(){ apply(scale + 0.1); });
+    var saved = 1;
+    try{ saved = parseFloat(localStorage.getItem('deckFontScale')) || 1; }catch(e){}
+    apply(saved);
+  })();
+  (function(){
+    var resetBtn = document.getElementById('resetCtrl');
+    if(!resetBtn) return;
+    resetBtn.addEventListener('click', function(){
+      var root = document.documentElement;
+
+      root.style.setProperty('--deck-max', '100%');
+      document.querySelectorAll('#widthCtrl button').forEach(function(b){
+        b.classList.toggle('active', b.dataset.w === '100%');
+      });
+      try{ localStorage.setItem('deckWidth', '100%'); }catch(e){}
+
+      document.body.classList.remove('light-theme');
+      var themeBtn = document.getElementById('themeToggle');
+      if(themeBtn) themeBtn.textContent = '🌙';
+      try{ localStorage.setItem('deckTheme', 'dark'); }catch(e){}
+
+      root.style.setProperty('--font-scale', 1);
+      try{ localStorage.setItem('deckFontScale', 1); }catch(e){}
+    });
+  })();
+  render();
+</script>
+</body>
+</html>
